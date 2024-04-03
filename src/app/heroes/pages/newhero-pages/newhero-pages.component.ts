@@ -2,10 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {Hero, Publisher} from "../../interfaces/hero.interface";
 import {HeroesService} from "../../services/heroes.service";
-import {reportUnhandledError} from "rxjs/internal/util/reportUnhandledError";
 import {ActivatedRoute, Router} from "@angular/router";
 import {switchMap} from "rxjs";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
+import {ModalComponent} from "../../components/modal/modal.component";
 
 @Component({
   selector: 'app-newhero-pages',
@@ -26,7 +27,8 @@ export class NewheroPagesComponent implements OnInit {
     constructor(private heroService:HeroesService,
                 private activatedRoute:ActivatedRoute,
                 private  router:Router,
-                private snackbar: MatSnackBar
+                private snackbar: MatSnackBar,
+                private dialog: MatDialog
 
     ) {}
 
@@ -84,6 +86,25 @@ export class NewheroPagesComponent implements OnInit {
       this.snackbar.open(message,'done',{
         duration: 2500
       })
+    }
+
+    onDeleteHero():void {
+      if(!this.currentHero.id) throw Error ('El id de hero es requerido');
+
+        const dialogRef = this.dialog.open(ModalComponent, {
+          data: this.heroForm.value
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+          console.log(result);
+          if(!result) return;
+          this.heroService.deleteHero(this.currentHero.id)
+            .subscribe(wasDeleted=> {
+              if(wasDeleted) this.router.navigate(['/heroes']);
+          })
+        });
+
     }
 
 }

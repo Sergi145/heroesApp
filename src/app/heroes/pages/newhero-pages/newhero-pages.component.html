@@ -34,7 +34,7 @@
               <input matInput type="text" required formControlName="alt_img">
             </mat-form-field>
           </div>
-          <button  *ngIf="currentHero.id"  mat-flat-button color="warn" class="mr-2">Borrar</button>
+          <button  *ngIf="currentHero.id"  mat-flat-button color="warn" class="mr-2" (click)="onDeleteHero()">Borrar</button>
           <button mat-flat-button color="primary" (click)="onSubmit()">Guardar</button>
         </mat-card-content>
       </mat-card>
